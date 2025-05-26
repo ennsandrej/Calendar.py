@@ -1,61 +1,66 @@
 import calendar
+import tkinter as tk
+from tkinter import ttk
+from tkinter.scrolledtext import ScrolledText
 
-# Funktion zum Erstellen eines Jahreskalenders 
-def create_year_calendar(year):
-    # Erstelle ein TextCalendar-Objekt das die Woche mit dem Sonntag beginnt
+# Funktion zum Erstellen des Monatskalenders
+def create_month_calendar(year, month):
     cal = calendar.TextCalendar(calendar.SUNDAY)
-    
-    #Erhalte den Kalender für das gesamte Jahr im Textformat
-    year_calendar = cal.formatyear(year)
-    
-    #Ausgabe des Kalenders für das angegebene Jahr
-    print(f"\nKalender für das Jahr {year}: \n")
-    print(year_calendar)
-    
-    #Ausgabe Kalender für den Monat Febraur 2025
-    year = 2025
-    print("Erstelle Jahreskalender...\n")
-    create_year_calendar(year) # Kalender für das Jahr 2025
-    # Zeigt den Kalender für den Februar 2025 an
-    print("\nErstelle Monatskalender für Februar 2025/n")
-    create_month_calendar(year, 2) # Kalender für Februar 2025
-    
-    #Ausgabe Kalender für den Monat März 2025
-    print("\nErstelle Monatskalender für März 2025/n")
-    create_month_calendar(year,3) # Kalender für März 2025
-   
-   #Ausgabe Kalender für den Monat April 2025
-    print("\nErstelle Monatskalender für April 2025/n")
-    create_month_calendar(year, 4) # Kalender für April 2025
-    
-    #Ausgabe Kalender für den Monat Mai 2025
-    print("\nErstelle Monatskalender für Mai 2025/n")
-    create_month_calendar(year, 5) # Kalender für  Mai 2025 
-    
-    #Ausgabe Kalender für den Monat Juni 2025
-    print("\nErstelle Monatskalender für Juni 2025/n")
-    create_month_calendar(year, 6) # Kalender für  Juni 2025
-    
-    #Ausgabe Kalender für den Monat Juli 2025
-    print("\nErstelle Monatskalender für Juli 2025/n")
-    create_month_calendar(year, 7) # Kalender für Juli 2025
-    
-    #Ausgabe Kalender für den Monat August 2025
-    print("\nErstelle Monatskalender für August 2025/n")
-    create_month_calendar(year, 8) # Kalender für August 2025
-    
-    #Ausgabe Kalender für den Monat September 2025
-    print("\nErstelle Monatskalender für September 2025/n")
-    create_month_calendar(year, 9) # Kalender für September 2025
-    
-    #Ausgabe Kalender für den Monat Oktober 2025
-    print("\nErstelle Monatskalender für Oktober 2025/n")
-    create_month_calendar(year, 10) #Kalender für Oktober 2025 
-    
-    #Ausgabe Kalender für den Monat November 2025
-    print("\nErstelle Monatskalender für November 2025/n")
-    create_month_calendar(year, 11) # Kalender für November 2025
-    
-    #Ausgabe Kalender für den Monat Dezember 2025
-    print("\nErstelle Monatskalender für Dezember 2025/n")
-    create_month_calendar(year, 12) # Kalender für Dezember 2025
+    return cal.formatmonth(year, month)
+
+# Funktion zum Erstellen des Jahreskalenders
+def create_year_calendar(year):
+    cal = calendar.TextCalendar(calendar.SUNDAY)
+    return cal.formatyear(year)
+
+# Funktion, um Kalender in der Textbox anzuzeigen
+def show_calendar():
+    try:
+        year = int(year_entry.get())
+        view = view_option.get()
+        
+        if view == "Jahreskalender":
+            result = create_year_calendar(year)
+        else:
+            month = month_combo.current() + 1  # Januar = 0 → +1
+            result = create_month_calendar(year, month)
+
+        text_box.delete('1.0', tk.END)
+        text_box.insert(tk.END, result)
+    except ValueError:
+        text_box.delete('1.0', tk.END)
+        text_box.insert(tk.END, "Bitte eine gültige Jahreszahl eingeben.")
+
+# Hauptfenster
+root = tk.Tk()
+root.title("Kalenderanzeige")
+
+# Jahres-Eingabe
+tk.Label(root, text="Jahr:").grid(row=0, column=0, padx=5, pady=5, sticky="e")
+year_entry = tk.Entry(root)
+year_entry.grid(row=0, column=1, padx=5, pady=5)
+
+# Monats-Auswahl
+tk.Label(root, text="Monat:").grid(row=1, column=0, padx=5, pady=5, sticky="e")
+month_combo = ttk.Combobox(root, values=[
+    "Januar", "Februar", "März", "April", "Mai", "Juni",
+    "Juli", "August", "September", "Oktober", "November", "Dezember"
+])
+month_combo.current(0)
+month_combo.grid(row=1, column=1, padx=5, pady=5)
+
+# Auswahl Jahres- oder Monatskalender
+view_option = ttk.Combobox(root, values=["Monatskalender", "Jahreskalender"])
+view_option.current(0)
+view_option.grid(row=2, column=1, padx=5, pady=5)
+
+# Button zur Anzeige
+show_btn = tk.Button(root, text="Kalender anzeigen", command=show_calendar)
+show_btn.grid(row=3, column=0, columnspan=2, pady=10)
+
+# Textfeld zur Anzeige des Kalenders
+text_box = ScrolledText(root, width=60, height=20)
+text_box.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
+
+# Hauptloop
+root.mainloop()
